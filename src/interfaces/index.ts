@@ -1,3 +1,4 @@
+import { FieldValue, serverTimestamp } from "firebase/firestore";
 import { FC } from "react";
 
 export interface User {
@@ -28,4 +29,13 @@ export interface ThemeProviderState {
 export interface Routes {
     path: string;
     component: FC;
+}
+
+export interface SingleMessages {
+    from: string;
+    to: string;
+    createdAt: typeof serverTimestamp | FieldValue | Date;
+    reply: string;
+    reactions: object;
+    isSeen: boolean;
 }

@@ -23,7 +23,7 @@ const ChatWindow = () => {
                     </div>
                 </div>
             </div>
-            <div className="bg-blue-500"></div>
+            <div className=""></div>
             <div className="flex items-center justify-center p-8">
                 <input
                     type="text"
