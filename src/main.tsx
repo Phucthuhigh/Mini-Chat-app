@@ -9,11 +9,11 @@ import AuthContext from "./contexts/AuthContext.tsx";
 ReactDOM.createRoot(document.getElementById("root")!).render(
     <React.StrictMode>
         <Router>
-            <AuthContext>
-                <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+            <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+                <AuthContext>
                     <App />
-                </ThemeProvider>
-            </AuthContext>
+                </AuthContext>
+            </ThemeProvider>
         </Router>
     </React.StrictMode>
 );

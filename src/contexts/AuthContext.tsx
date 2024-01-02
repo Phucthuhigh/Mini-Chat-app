@@ -2,34 +2,44 @@ import { ReactNode, createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/firebase/config";
+import { AuthContextType, User } from "@/interfaces";
+import Loading from "@/components/ui/loading";
 
-interface User {
-    displayName: null | string;
-    email: null | string;
-    phoneNumber: null | string;
-    photoURL: null | string;
-    uid: string;
-}
-
-export const AuthContext = createContext({});
+export const AuthContext = createContext<AuthContextType>({});
 
 const AuthContextProvider = ({ children }: { children: ReactNode }) => {
-    const [user, setUser] = useState<User>();
+    const [user, setUser] = useState<User | null | undefined>();
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     const navigate = useNavigate();
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            if (user) {
-                const { displayName, email, phoneNumber, photoURL, uid } = user;
-                setUser({ displayName, email, phoneNumber, photoURL, uid });
+        const unsubscribe = onAuthStateChanged(auth, (userLogin) => {
+            if (userLogin) {
+                const { displayName, email, phoneNumber, photoURL, uid } =
+                    userLogin;
+                setUser({
+                    uid,
+                    displayName,
+                    email,
+                    phoneNumber,
+                    photoURL,
+                } as User);
+                setIsLoading(false);
                 navigate("/messages");
+                return;
             }
+            setUser(null);
+            setIsLoading(false);
+            navigate("/");
+            return;
         });
 
         return () => unsubscribe();
     }, [navigate]);
 
-    return (
+    return isLoading ? (
+        <Loading />
+    ) : (
         <AuthContext.Provider value={{ user }}>{children}</AuthContext.Provider>
     );
 };

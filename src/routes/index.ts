@@ -1,21 +1,17 @@
-import Auth from "@/pages/Auth"
-import Messages from "@/pages/Messages"
-import { FC } from "react"
-
-interface Routes {
-    path: string,
-    component: FC
-}
+import Auth from "@/pages/Auth";
+import Messages from "@/pages/Messages";
+import { Routes } from "@/interfaces";
 
 export const publicRoutes: Array<Routes> = [
     {
         path: "/",
-        component: Auth
+        component: Auth,
     },
+];
+
+export const privateRoutes: Array<Routes> = [
     {
         path: "/messages",
-        component: Messages
-    }
-]
-
-export const privateRoutes: Array<Routes> = []
+        component: Messages,
+    },
+];

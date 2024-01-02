@@ -76,4 +76,9 @@ export const theme = {
     },
 };
 // eslint-disable-next-line no-undef
-export const plugins = [require("tailwindcss-animate")];
+export const plugins = [
+    // eslint-disable-next-line no-undef
+    require("tailwindcss-animate"),
+    // eslint-disable-next-line no-undef
+    require("@tailwindcss/container-queries"),
+];
