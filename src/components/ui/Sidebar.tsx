@@ -1,7 +1,6 @@
 import { ResizablePanel } from "./resizable";
 import SearchBar from "./searchBar";
 import { ScrollArea } from "./scroll-area";
-import SingleMessageCard from "./SingleMessageCard";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -18,16 +17,24 @@ import {
 } from "./dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
 import { IoIosLogOut } from "react-icons/io";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { signOut } from "firebase/auth";
 import { auth } from "@/firebase/config";
-import { User } from "@/interfaces";
+import { Conservation, GroupConservation, User } from "@/interfaces";
+import useFirestore from "@/hooks/useFirestore";
+import { QueryCompositeFilterConstraint, where } from "firebase/firestore";
+import MessageCard from "./MessageCard";
+import { AppContext } from "@/contexts/AppContext";
 
-const Sidebar = ({ user }: { user: User | null | undefined }) => {
+const Sidebar = ({ currentUser }: { currentUser: User }) => {
     const [themeState, setThemeState] = useState<string>(
         localStorage.getItem("vite-ui-theme") || ""
     );
+
+    const [focus, setFocus] = useState<boolean>(false);
+
+    const [searchResult, setSearchResult] = useState<Array<User>>([]);
 
     const { setTheme } = useTheme();
     useEffect(() => {
@@ -43,6 +50,25 @@ const Sidebar = ({ user }: { user: User | null | undefined }) => {
         signOut(auth);
     };
 
+    const { conservations } = useContext(AppContext);
+
+    const handleGetUserList = (
+        conservation: Conservation | GroupConservation
+    ) => {
+        const userList = useFirestore(
+            "users",
+            where(
+                "id",
+                "in",
+                conservation.members
+            ) as any as QueryCompositeFilterConstraint
+        );
+        const newUserList = userList.filter(
+            (userInfo) => userInfo.id != currentUser.id
+        );
+        return newUserList;
+    };
+
     return (
         <ResizablePanel
             collapsible={true}
@@ -52,43 +78,33 @@ const Sidebar = ({ user }: { user: User | null | undefined }) => {
             defaultSize={25}>
             <div className="px-3 py-2 border-b border-slate-400 dark:border-slate-800">
                 <span className="text-2xl font-semibold">Messages</span>
-                <SearchBar />
+                <SearchBar
+                    setFocus={setFocus}
+                    setSearchResult={setSearchResult}
+                />
             </div>
-            <ScrollArea className="overflow-auto">
-                <SingleMessageCard />
-                <SingleMessageCard />
-                <SingleMessageCard />
-                <SingleMessageCard />
-                <SingleMessageCard />
-                <SingleMessageCard />
-                <SingleMessageCard />
-                <SingleMessageCard />
-                <SingleMessageCard />
-                <SingleMessageCard />
-                <SingleMessageCard />
-                <SingleMessageCard />
-                <SingleMessageCard />
-                <SingleMessageCard />
-                <SingleMessageCard />
-                <SingleMessageCard />
-                <SingleMessageCard />
-            </ScrollArea>
+            <ScrollArea className="overflow-auto"></ScrollArea>
             <div className="flex items-center px-3 border-t border-slate-400 dark:border-slate-800">
                 <DropdownMenu>
                     <DropdownMenuTrigger className="flex items-center gap-4 rounded-sm hover:bg-slate-400 dark:hover:bg-slate-700 py-2 px-4 outline-none">
                         <Avatar>
                             <AvatarImage
-                                src={user?.photoURL}
-                                alt={`@${user?.displayName}`}
+                                src={currentUser?.photoURL}
+                                alt={`@${currentUser?.displayName}`}
                             />
-                            <AvatarFallback>CN</AvatarFallback>
+                            <AvatarFallback>
+                                {currentUser?.displayName
+                                    .slice(0, 2)
+                                    .trim()
+                                    .toUpperCase()}
+                            </AvatarFallback>
                         </Avatar>
                         <div className="flex flex-col items-start">
                             <span className="font-medium">
-                                {user?.displayName}
+                                {currentUser?.displayName}
                             </span>
                             <span className="text-gray-600 text-sm">
-                                {user?.email}
+                                {currentUser?.email}
                             </span>
                         </div>
                     </DropdownMenuTrigger>
