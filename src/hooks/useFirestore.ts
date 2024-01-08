@@ -10,16 +10,11 @@ import {
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 
-interface DocumentsType {
-    id: string;
-    [key: string]: any;
-}
-
-const useFirestore = (
+const useFirestore = <T>(
     collectionName: string,
     conditions?: QueryCompositeFilterConstraint
 ) => {
-    const [documents, setDocuments] = useState<Array<DocumentsType>>([]);
+    const [documents, setDocuments] = useState<Array<T>>([]);
     useEffect(() => {
         let collectionRef:
             | CollectionReference<DocumentData, DocumentData>
@@ -34,10 +29,11 @@ const useFirestore = (
 
         const unsubscribe = onSnapshot(collectionRef, (snapshot) => {
             const docs = snapshot.docs.map((doc) => ({
-                ...doc.data(),
+                ...doc.data() as T,
                 id: doc.id,
             }));
-            setDocuments(docs);
+            setDocuments(docs); 
+            
         });
 
         return () => unsubscribe();

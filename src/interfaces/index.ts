@@ -34,7 +34,7 @@ export interface Routes {
     component: FC;
 }
 
-export interface Conservation {
+export interface Conversation {
     id: string;
     members: string[];
     createdAt: typeof serverTimestamp | FieldValue | Date;
@@ -42,7 +42,7 @@ export interface Conservation {
     type: "directed" | "group";
 }
 
-export interface GroupConservation extends Conservation {
+export interface GroupConversation extends Conversation {
     displayName: string;
     photoUrl?: string;
 }

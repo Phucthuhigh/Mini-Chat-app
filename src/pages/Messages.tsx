@@ -17,7 +17,7 @@ const Messages = () => {
             autoSaveId="persistence"
             direction="horizontal"
             className="h-full">
-            <Sidebar user={user} />
+            <Sidebar currentUser={user} />
             <ResizableHandle withHandle />
             <ChatWindow />
         </ResizablePanelGroup>
