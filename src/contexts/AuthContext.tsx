@@ -18,7 +18,7 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
                 const { displayName, email, phoneNumber, photoURL, uid } =
                     userLogin;
                 setUser({
-                    uid,
+                    id: uid,
                     displayName,
                     email,
                     phoneNumber,

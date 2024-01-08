@@ -9,5 +9,5 @@ module.exports = {
     ignorePatterns: ["dist", ".eslintrc.cjs"],
     parser: "@typescript-eslint/parser",
     plugins: [],
-    rules: {},
+    rules: { "@typescript-eslint/no-explicit-any": false },
 };

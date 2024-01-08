@@ -1,13 +1,13 @@
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "./config";
 
-export const addDocument = async <T extends { uid: string }>(
+export const addDocument = async <T extends { id: string }>(
     collection: string,
     data: T
 ) => {
     try {
         await setDoc(
-            doc(db, collection, data.uid),
+            doc(db, collection, data.id),
             {
                 ...data,
             },

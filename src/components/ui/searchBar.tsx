@@ -1,4 +1,27 @@
-export default function SearchBar() {
+import useDebounce from "@/hooks/useDebounce";
+import { User } from "@/interfaces";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+
+interface SearchBarProps {
+    setFocus: Dispatch<SetStateAction<boolean>>;
+    setSearchResult: Dispatch<SetStateAction<Array<User>>>;
+}
+
+export default function SearchBar({
+    setFocus,
+    setSearchResult,
+}: SearchBarProps) {
+    const [input, setInput] = useState<string>("");
+
+    const debouncedValue = useDebounce(input, 500);
+
+    useEffect(() => {
+        if (!debouncedValue.trim()) {
+            setSearchResult([]);
+            return;
+        }
+    }, [debouncedValue]);
+
     return (
         <form className="px-2 mt-3">
             <div className="relative">
@@ -19,6 +42,13 @@ export default function SearchBar() {
                     type="text"
                     placeholder="Search"
                     className="transition-all duration-100 w-full py-2 pl-12 pr-4 dark:text-slate-200 border border-slate-400 focus:border-slate-600 dark:focus:border-slate-200 rounded-full outline-none bg-transparent"
+                    value={input}
+                    onFocus={() => setFocus(true)}
+                    onBlur={() => setFocus(false)}
+                    onChange={(e) => {
+                        const searchValue = e.target.value;
+                        if (!searchValue.startsWith(" ")) setInput(searchValue);
+                    }}
                 />
             </div>
         </form>

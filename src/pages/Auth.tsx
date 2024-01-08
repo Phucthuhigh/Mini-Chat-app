@@ -22,7 +22,7 @@ const Auth = () => {
             const { user } = userCredential;
             const details = getAdditionalUserInfo(userCredential);
             addDocument("users", {
-                uid: user.uid,
+                id: user.uid,
                 displayName: user.displayName,
                 email: user.email,
                 photoURL: user.photoURL,

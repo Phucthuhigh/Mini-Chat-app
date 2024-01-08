@@ -7,11 +7,12 @@ import { AuthContextType } from "@/interfaces";
 import { AuthContext } from "@/contexts/AuthContext";
 import Sidebar from "@/components/ui/Sidebar";
 import ChatWindow from "@/components/ui/ChatWindow";
+import Loading from "@/components/ui/loading";
 
 const Messages = () => {
     const { user } = useContext<AuthContextType>(AuthContext);
 
-    return (
+    return user ? (
         <ResizablePanelGroup
             autoSaveId="persistence"
             direction="horizontal"
@@ -20,6 +21,8 @@ const Messages = () => {
             <ResizableHandle withHandle />
             <ChatWindow />
         </ResizablePanelGroup>
+    ) : (
+        <Loading />
     );
 };
 
