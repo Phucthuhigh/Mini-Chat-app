@@ -21,10 +21,10 @@ import { useContext, useEffect, useState } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { signOut } from "firebase/auth";
 import { auth } from "@/firebase/config";
-import { Conservation, GroupConservation, User } from "@/interfaces";
+import { Conversation, GroupConversation, User } from "@/interfaces";
 import useFirestore from "@/hooks/useFirestore";
 import { QueryCompositeFilterConstraint, where } from "firebase/firestore";
-import MessageCard from "./MessageCard";
+import ConversationSelect from "./ConversationSelect";
 import { AppContext } from "@/contexts/AppContext";
 
 const Sidebar = ({ currentUser }: { currentUser: User }) => {
@@ -50,24 +50,9 @@ const Sidebar = ({ currentUser }: { currentUser: User }) => {
         signOut(auth);
     };
 
-    const { conservations } = useContext(AppContext);
+    const { conversations } = useContext(AppContext);
 
-    const handleGetUserList = (
-        conservation: Conservation | GroupConservation
-    ) => {
-        const userList = useFirestore(
-            "users",
-            where(
-                "id",
-                "in",
-                conservation.members
-            ) as any as QueryCompositeFilterConstraint
-        );
-        const newUserList = userList.filter(
-            (userInfo) => userInfo.id != currentUser.id
-        );
-        return newUserList;
-    };
+    
 
     return (
         <ResizablePanel
@@ -83,7 +68,11 @@ const Sidebar = ({ currentUser }: { currentUser: User }) => {
                     setSearchResult={setSearchResult}
                 />
             </div>
-            <ScrollArea className="overflow-auto"></ScrollArea>
+            <ScrollArea className="overflow-auto">
+                {
+                    conversations.map((conversation: Conversation | GroupConversation) => <ConversationSelect key={conversation.id} conversation={conversation} />)
+                }
+            </ScrollArea>
             <div className="flex items-center px-3 border-t border-slate-400 dark:border-slate-800">
                 <DropdownMenu>
                     <DropdownMenuTrigger className="flex items-center gap-4 rounded-sm hover:bg-slate-400 dark:hover:bg-slate-700 py-2 px-4 outline-none">
