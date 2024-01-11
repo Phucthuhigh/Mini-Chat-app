@@ -4,6 +4,7 @@ import {
     DocumentData,
     Query,
     QueryCompositeFilterConstraint,
+    QueryOrderByConstraint,
     collection,
     onSnapshot,
     query,
@@ -12,7 +13,8 @@ import { useEffect, useState } from "react";
 
 const useFirestore = <T>(
     collectionName: string,
-    conditions?: QueryCompositeFilterConstraint
+    conditions?: QueryCompositeFilterConstraint,
+    order?: QueryOrderByConstraint
 ) => {
     const [documents, setDocuments] = useState<Array<T>>([]);
     useEffect(() => {
@@ -27,13 +29,16 @@ const useFirestore = <T>(
             collectionRef = query(collectionRef, conditions);
         }
 
+        if (order) {
+            collectionRef = query(collectionRef, order);
+        }
+
         const unsubscribe = onSnapshot(collectionRef, (snapshot) => {
             const docs = snapshot.docs.map((doc) => ({
-                ...doc.data() as T,
+                ...(doc.data() as T),
                 id: doc.id,
             }));
-            setDocuments(docs); 
-            
+            setDocuments(docs);
         });
 
         return () => unsubscribe();

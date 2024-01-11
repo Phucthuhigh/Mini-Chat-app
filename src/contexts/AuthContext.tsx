@@ -25,12 +25,10 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
                     photoURL,
                 } as User);
                 setIsLoading(false);
-                navigate("/messages");
                 return;
             }
             setUser(null);
             setIsLoading(false);
-            navigate("/");
             return;
         });
 

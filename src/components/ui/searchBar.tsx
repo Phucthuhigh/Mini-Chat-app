@@ -1,15 +1,27 @@
+import { db } from "@/firebase/config";
 import useDebounce from "@/hooks/useDebounce";
+import useFirestore from "@/hooks/useFirestore";
 import { User } from "@/interfaces";
+import {
+    collection,
+    getDocs,
+    limit,
+    orderBy,
+    query,
+    where,
+} from "firebase/firestore";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 interface SearchBarProps {
     setFocus: Dispatch<SetStateAction<boolean>>;
     setSearchResult: Dispatch<SetStateAction<Array<User>>>;
+    currentUser: User;
 }
 
 export default function SearchBar({
     setFocus,
     setSearchResult,
+    currentUser,
 }: SearchBarProps) {
     const [input, setInput] = useState<string>("");
 
@@ -20,6 +32,25 @@ export default function SearchBar({
             setSearchResult([]);
             return;
         }
+
+        (async () => {
+            const searchUsersResultRef = query(
+                collection(db, "users"),
+                where("keywords", "array-contains", debouncedValue),
+                limit(20),
+                orderBy("displayName")
+            );
+            const searchUsersResult = await getDocs(searchUsersResultRef);
+            setSearchResult(
+                searchUsersResult.docs
+                    .map((doc) => doc.data())
+                    .filter((doc) => doc.id != currentUser.id) as User[]
+            );
+        })();
+
+        return () => {
+            setSearchResult([]);
+        };
     }, [debouncedValue]);
 
     return (
@@ -44,7 +75,10 @@ export default function SearchBar({
                     className="transition-all duration-100 w-full py-2 pl-12 pr-4 dark:text-slate-200 border border-slate-400 focus:border-slate-600 dark:focus:border-slate-200 rounded-full outline-none bg-transparent"
                     value={input}
                     onFocus={() => setFocus(true)}
-                    onBlur={() => setFocus(false)}
+                    onBlur={() => {
+                        setFocus(false);
+                        setInput("");
+                    }}
                     onChange={(e) => {
                         const searchValue = e.target.value;
                         if (!searchValue.startsWith(" ")) setInput(searchValue);

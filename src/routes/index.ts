@@ -11,7 +11,11 @@ export const publicRoutes: Array<Routes> = [
 
 export const privateRoutes: Array<Routes> = [
     {
-        path: "/messages",
+        path: "/messages/",
+        component: Messages,
+    },
+    {
+        path: "/messages/:id",
         component: Messages,
     },
 ];

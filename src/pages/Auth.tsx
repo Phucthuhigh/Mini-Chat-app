@@ -9,11 +9,17 @@ import {
 } from "firebase/auth";
 import { addDocument, generateKeywords } from "@/firebase/services";
 import { serverTimestamp } from "firebase/firestore";
+import { User } from "@/interfaces";
+import { useContext } from "react";
+import { AuthContext } from "@/contexts/AuthContext";
+import { Navigate } from "react-router-dom";
 
 const facebookAuthProvider = new FacebookAuthProvider();
 const googleAuthProvider = new GoogleAuthProvider();
 
 const Auth = () => {
+    const { user } = useContext(AuthContext);
+
     const handleLogin = async (
         provider: FacebookAuthProvider | GoogleAuthProvider
     ) => {
@@ -21,23 +27,26 @@ const Auth = () => {
             const userCredential = await signInWithPopup(auth, provider);
             const { user } = userCredential;
             const details = getAdditionalUserInfo(userCredential);
-            addDocument("users", {
+            addDocument<User>("users", {
                 id: user.uid,
                 displayName: user.displayName,
                 email: user.email,
                 photoURL: user.photoURL,
-                providerId: details?.providerId,
+                phoneNumber: user.phoneNumber,
+                providerId: details?.providerId as string | undefined,
                 keywords: user.displayName
                     ? generateKeywords(user.displayName.toLowerCase())
                     : [],
-                lastSeen: serverTimestamp(),
+                lastActive: serverTimestamp(),
             });
         } catch (error) {
             console.log(error);
         }
     };
 
-    return (
+    return user ? (
+        <Navigate to={"/messages"} />
+    ) : (
         <div className="flex flex-1 flex-col gap-10 justify-center items-center mx-auto">
             <h1 className="text-center text-5xl font-bold text-slate-800 dark:text-white">
                 MINI CHAT APP

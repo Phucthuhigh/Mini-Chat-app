@@ -21,9 +21,7 @@ import { useContext, useEffect, useState } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { signOut } from "firebase/auth";
 import { auth } from "@/firebase/config";
-import { Conversation, GroupConversation, User } from "@/interfaces";
-import useFirestore from "@/hooks/useFirestore";
-import { QueryCompositeFilterConstraint, where } from "firebase/firestore";
+import { Conversation, User } from "@/interfaces";
 import ConversationSelect from "./ConversationSelect";
 import { AppContext } from "@/contexts/AppContext";
 
@@ -52,8 +50,6 @@ const Sidebar = ({ currentUser }: { currentUser: User }) => {
 
     const { conversations } = useContext(AppContext);
 
-    
-
     return (
         <ResizablePanel
             collapsible={true}
@@ -64,26 +60,31 @@ const Sidebar = ({ currentUser }: { currentUser: User }) => {
             <div className="px-3 py-2 border-b border-slate-400 dark:border-slate-800">
                 <span className="text-2xl font-semibold">Messages</span>
                 <SearchBar
+                    currentUser={currentUser}
                     setFocus={setFocus}
                     setSearchResult={setSearchResult}
                 />
             </div>
             <ScrollArea className="overflow-auto">
-                {
-                    conversations.map((conversation: Conversation | GroupConversation) => <ConversationSelect key={conversation.id} conversation={conversation} />)
-                }
+                {conversations.map((conversation: Conversation) => (
+                    <ConversationSelect
+                        key={conversation.id}
+                        conversation={conversation}
+                        currentUser={currentUser}
+                    />
+                ))}
             </ScrollArea>
             <div className="flex items-center px-3 border-t border-slate-400 dark:border-slate-800">
                 <DropdownMenu>
                     <DropdownMenuTrigger className="flex items-center gap-4 rounded-sm hover:bg-slate-400 dark:hover:bg-slate-700 py-2 px-4 outline-none">
                         <Avatar>
                             <AvatarImage
-                                src={currentUser?.photoURL}
+                                src={currentUser?.photoURL ?? ""}
                                 alt={`@${currentUser?.displayName}`}
                             />
                             <AvatarFallback>
                                 {currentUser?.displayName
-                                    .slice(0, 2)
+                                    ?.slice(0, 2)
                                     .trim()
                                     .toUpperCase()}
                             </AvatarFallback>

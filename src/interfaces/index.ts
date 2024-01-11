@@ -1,14 +1,14 @@
-import { FieldValue, serverTimestamp } from "firebase/firestore";
+import { Timestamp } from "firebase/firestore";
 import { FC } from "react";
 
 export interface User {
     id: string;
-    displayName: string;
-    email: string;
-    phoneNumber: string;
-    photoURL: string;
+    displayName: string | null;
+    email: string | null;
+    phoneNumber: string | null;
+    photoURL: string | null;
     keywords?: Array<string>;
-    lastSeen?: typeof serverTimestamp | FieldValue | Date;
+    lastActive?: Timestamp;
     providerId?: string;
 }
 
@@ -37,21 +37,20 @@ export interface Routes {
 export interface Conversation {
     id: string;
     members: string[];
-    createdAt: typeof serverTimestamp | FieldValue | Date;
+    createdAt: Timestamp;
     lastMessageId: null | string;
-    type: "directed" | "group";
-}
-
-export interface GroupConversation extends Conversation {
-    displayName: string;
+    lastMessageCreatedAt: null | Timestamp;
+    type: "direct" | "group";
+    displayName?: string;
     photoUrl?: string;
 }
 
 export interface Message {
-    conservationId: string;
-    createdAt: typeof serverTimestamp | FieldValue | Date;
+    id: string;
+    conversationId: string;
+    by: string;
+    createdAt: Timestamp;
     reply: string | null;
-    reactions: Record<string, any>;
-    isSeen: boolean;
+    reactions: Record<string, number>;
     text: string;
 }

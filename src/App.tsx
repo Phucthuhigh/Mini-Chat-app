@@ -1,6 +1,7 @@
 import "./App.css";
 import { publicRoutes, privateRoutes } from "@/routes";
 import { Routes, Route } from "react-router-dom";
+import ProtectedRoute from "./components/ui/ProtectedRoute";
 
 function App() {
     return (
@@ -22,7 +23,11 @@ function App() {
                         <Route
                             key={index}
                             path={route.path}
-                            element={<Page />}
+                            element={
+                                <ProtectedRoute>
+                                    <Page />
+                                </ProtectedRoute>
+                            }
                         />
                     );
                 })}
