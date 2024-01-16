@@ -38,6 +38,7 @@ const useFirestore = <T>(
                 ...(doc.data() as T),
                 id: doc.id,
             }));
+
             setDocuments(docs);
         });
 

@@ -25,7 +25,7 @@ const AppContextProvider = ({ children }: { children: ReactNode }) => {
         "conversations",
         conversationsCondition,
         orderBy("lastMessageCreatedAt", "desc")
-    ).filter((conversation) => conversation.lastMessageId !== null);
+    );
 
     return (
         <AppContext.Provider value={{ conversations }}>

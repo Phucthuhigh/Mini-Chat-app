@@ -14,8 +14,6 @@ const Messages = () => {
     const { user } = useContext<AuthContextType>(AuthContext);
     const { id } = useParams();
 
-    console.log(id);
-
     return (
         user && (
             <ResizablePanelGroup

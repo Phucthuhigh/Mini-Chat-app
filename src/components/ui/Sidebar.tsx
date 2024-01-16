@@ -24,15 +24,16 @@ import { auth } from "@/firebase/config";
 import { Conversation, User } from "@/interfaces";
 import ConversationSelect from "./ConversationSelect";
 import { AppContext } from "@/contexts/AppContext";
+import UserCard from "./UserCard";
 
 const Sidebar = ({ currentUser }: { currentUser: User }) => {
     const [themeState, setThemeState] = useState<string>(
         localStorage.getItem("vite-ui-theme") || ""
     );
 
-    const [focus, setFocus] = useState<boolean>(false);
-
     const [searchResult, setSearchResult] = useState<Array<User>>([]);
+
+    const [input, setInput] = useState<string>("");
 
     const { setTheme } = useTheme();
     useEffect(() => {
@@ -50,6 +51,8 @@ const Sidebar = ({ currentUser }: { currentUser: User }) => {
 
     const { conversations } = useContext(AppContext);
 
+    console.log(conversations);
+
     return (
         <ResizablePanel
             collapsible={true}
@@ -61,18 +64,33 @@ const Sidebar = ({ currentUser }: { currentUser: User }) => {
                 <span className="text-2xl font-semibold">Messages</span>
                 <SearchBar
                     currentUser={currentUser}
-                    setFocus={setFocus}
                     setSearchResult={setSearchResult}
+                    input={input}
+                    setInput={setInput}
                 />
             </div>
             <ScrollArea className="overflow-auto">
-                {conversations.map((conversation: Conversation) => (
-                    <ConversationSelect
-                        key={conversation.id}
-                        conversation={conversation}
-                        currentUser={currentUser}
-                    />
-                ))}
+                {input !== ""
+                    ? searchResult.map((userInfo: User) => (
+                          <UserCard
+                              setInput={setInput}
+                              key={userInfo.id}
+                              userInfo={userInfo}
+                              currentUser={currentUser}
+                          />
+                      ))
+                    : conversations
+                          .filter(
+                              (conversation: Conversation) =>
+                                  conversation.lastMessageId !== null
+                          )
+                          .map((conversation: Conversation) => (
+                              <ConversationSelect
+                                  key={conversation.id}
+                                  conversation={conversation}
+                                  currentUser={currentUser}
+                              />
+                          ))}
             </ScrollArea>
             <div className="flex items-center px-3 border-t border-slate-400 dark:border-slate-800">
                 <DropdownMenu>

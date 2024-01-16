@@ -10,21 +10,21 @@ import {
     query,
     where,
 } from "firebase/firestore";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 
 interface SearchBarProps {
-    setFocus: Dispatch<SetStateAction<boolean>>;
+    input: string;
+    setInput: Dispatch<SetStateAction<string>>;
     setSearchResult: Dispatch<SetStateAction<Array<User>>>;
     currentUser: User;
 }
 
 export default function SearchBar({
-    setFocus,
+    input,
+    setInput,
     setSearchResult,
     currentUser,
 }: SearchBarProps) {
-    const [input, setInput] = useState<string>("");
-
     const debouncedValue = useDebounce(input, 500);
 
     useEffect(() => {
@@ -74,11 +74,6 @@ export default function SearchBar({
                     placeholder="Search"
                     className="transition-all duration-100 w-full py-2 pl-12 pr-4 dark:text-slate-200 border border-slate-400 focus:border-slate-600 dark:focus:border-slate-200 rounded-full outline-none bg-transparent"
                     value={input}
-                    onFocus={() => setFocus(true)}
-                    onBlur={() => {
-                        setFocus(false);
-                        setInput("");
-                    }}
                     onChange={(e) => {
                         const searchValue = e.target.value;
                         if (!searchValue.startsWith(" ")) setInput(searchValue);

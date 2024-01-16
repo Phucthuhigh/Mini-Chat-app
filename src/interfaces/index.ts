@@ -1,4 +1,4 @@
-import { Timestamp } from "firebase/firestore";
+import { FieldValue } from "firebase/firestore";
 import { FC } from "react";
 
 export interface User {
@@ -8,7 +8,7 @@ export interface User {
     phoneNumber: string | null;
     photoURL: string | null;
     keywords?: Array<string>;
-    lastActive?: Timestamp;
+    lastActive?: FieldValue;
     providerId?: string;
 }
 
@@ -37,9 +37,9 @@ export interface Routes {
 export interface Conversation {
     id: string;
     members: string[];
-    createdAt: Timestamp;
+    createdAt: FieldValue;
     lastMessageId: null | string;
-    lastMessageCreatedAt: null | Timestamp;
+    lastMessageCreatedAt: null | FieldValue;
     type: "direct" | "group";
     displayName?: string;
     photoUrl?: string;
@@ -49,7 +49,7 @@ export interface Message {
     id: string;
     conversationId: string;
     by: string;
-    createdAt: Timestamp;
+    createdAt: FieldValue;
     reply: string | null;
     reactions: Record<string, number>;
     text: string;

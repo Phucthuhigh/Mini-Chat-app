@@ -1,9 +1,13 @@
 import { useMemo } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
 import { Message, User } from "@/interfaces";
-import { QueryCompositeFilterConstraint, where } from "firebase/firestore";
+import {
+    QueryCompositeFilterConstraint,
+    Timestamp,
+    where,
+} from "firebase/firestore";
 import useFirestore from "@/hooks/useFirestore";
-import { formatTime } from "@/utils/formatTime";
+import formatTime from "@/utils/formatTime";
 
 const MessageChat = ({
     message,
@@ -34,7 +38,8 @@ const MessageChat = ({
                         {userType?.displayName}
                     </span>
                     <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
-                        {message.createdAt.toDate().toLocaleTimeString()}
+                        {message.createdAt &&
+                            formatTime(message.createdAt as Timestamp)}
                     </span>
                 </div>
                 <p className="text-sm font-normal py-2.5 text-gray-900 dark:text-white">
@@ -50,7 +55,8 @@ const MessageChat = ({
                         Bạn
                     </span>
                     <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
-                        {message.createdAt.toDate().toLocaleTimeString()}
+                        {message.createdAt &&
+                            formatTime(message.createdAt as Timestamp)}
                     </span>
                 </div>
                 <p className="text-sm font-normal py-2.5 text-gray-900 dark:text-white">
