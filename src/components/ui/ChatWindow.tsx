@@ -6,16 +6,13 @@ import { Button } from "./button";
 import MessageChat from "./MessageChat";
 import useFirestore from "@/hooks/useFirestore";
 import { Conversation, Message, User } from "@/interfaces";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import {
     QueryCompositeFilterConstraint,
     Timestamp,
-    Unsubscribe,
     collection,
     doc,
-    onSnapshot,
     orderBy,
-    query,
     serverTimestamp,
     updateDoc,
     where,
@@ -23,17 +20,6 @@ import {
 import formatTime from "@/utils/formatTime";
 import { db } from "@/firebase/config";
 import { addDocument } from "@/firebase/services";
-
-function skipFirst(operation: Unsubscribe) {
-    let firstTime: boolean = true;
-    return function () {
-        if (firstTime) {
-            firstTime = false;
-        } else {
-            return operation();
-        }
-    };
-}
 
 const ChatWindow = ({ id, currentUser }: { id: string; currentUser: User }) => {
     const endOfMessageRef = useRef<HTMLDivElement>(null);
@@ -58,27 +44,19 @@ const ChatWindow = ({ id, currentUser }: { id: string; currentUser: User }) => {
         (user) => currentUser.id !== user.id
     );
 
-    const [messages, setMessages] = useState<Array<Message>>([]);
-
-    useEffect(() => {
-        const messagesRef = query(
-            collection(db, "messages"),
-            where("conversationId", "==", id),
-            orderBy("createdAt")
-        );
-
-        const unsubscribe = skipFirst(
-            onSnapshot(messagesRef, (snap) => {
-                const docs: Message[] = snap.docs.map((doc) => ({
-                    ...(doc.data() as Message),
-                    id: doc.id,
-                }));
-                setMessages(docs);
-            })
-        );
-
-        return () => unsubscribe();
+    const messagesCondition = useMemo(() => {
+        return where(
+            "conversationId",
+            "==",
+            id
+        ) as any as QueryCompositeFilterConstraint;
     }, [id]);
+
+    const messages = useFirestore<Message>(
+        "messages",
+        messagesCondition,
+        orderBy("createdAt")
+    );
 
     const [newMessage, setNewMessage] = useState<string>("");
 
