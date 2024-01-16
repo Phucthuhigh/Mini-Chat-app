@@ -58,6 +58,8 @@ const ChatWindow = ({ id, currentUser }: { id: string; currentUser: User }) => {
         orderBy("createdAt")
     );
 
+    // console.log(messages);
+
     const [newMessage, setNewMessage] = useState<string>("");
 
     const handleAddMessage = async () => {

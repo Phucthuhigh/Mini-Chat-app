@@ -70,7 +70,7 @@ const MessageCard = ({
                         : conversation?.displayName}
                 </span>
                 {!!lastMessage.length && !!userTypeLastMessage.length && (
-                    <span className="text-sm font-thin text-gray-600">
+                    <span className="text-sm font-thin line-clamp-1 text-gray-600">
                         {userTypeLastMessage[0].id === currentUser.id
                             ? "Bạn"
                             : userTypeLastMessage[0].displayName}

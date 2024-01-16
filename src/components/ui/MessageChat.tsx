@@ -42,7 +42,7 @@ const MessageChat = ({
                             formatTime(message.createdAt as Timestamp)}
                     </span>
                 </div>
-                <p className="text-sm font-normal py-2.5 text-gray-900 dark:text-white">
+                <p className="text-sm font-normal py-2.5 text-gray-900 dark:text-white break-words">
                     {message.text}
                 </p>
             </div>
@@ -59,7 +59,7 @@ const MessageChat = ({
                             formatTime(message.createdAt as Timestamp)}
                     </span>
                 </div>
-                <p className="text-sm font-normal py-2.5 text-gray-900 dark:text-white">
+                <p className="text-sm font-normal py-2.5 text-gray-900 dark:text-white break-words">
                     {message.text}
                 </p>
             </div>

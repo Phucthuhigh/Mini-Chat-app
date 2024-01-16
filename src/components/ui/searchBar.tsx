@@ -1,6 +1,5 @@
 import { db } from "@/firebase/config";
 import useDebounce from "@/hooks/useDebounce";
-import useFirestore from "@/hooks/useFirestore";
 import { User } from "@/interfaces";
 import {
     collection,
