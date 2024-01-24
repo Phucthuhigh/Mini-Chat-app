@@ -35,7 +35,11 @@ export default function SearchBar({
         (async () => {
             const searchUsersResultRef = query(
                 collection(db, "users"),
-                where("keywords", "array-contains", debouncedValue),
+                where(
+                    "keywords",
+                    "array-contains",
+                    debouncedValue.toLowerCase()
+                ),
                 limit(20),
                 orderBy("displayName")
             );
